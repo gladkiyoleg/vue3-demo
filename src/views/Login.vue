@@ -1,12 +1,13 @@
 <template>
   <div class="wrapper">
     <div>
-      <auth-form @onSubmit="e => submitHandler(e)" :is-login="isLogin"/>
+      <auth-form @onSubmit="e => submitHandler(e)" :is-login="isLogin" :is-disabled="isLoading"/>
+      <p>{{errorLogin || errorSignUp}}</p>
       <p v-if="isLogin">
-        Switch from to <span class="link" @click="isLogin = !isLogin">sign up</span>
+        Switch form to <span class="link" @click="isLogin = !isLogin">sign up</span>
       </p>
       <p v-else>
-        Switch from to <span class="link" @click="isLogin = !isLogin">login</span>
+        Switch form to <span class="link" @click="isLogin = !isLogin">login</span>
       </p>
     </div>
   </div>
@@ -17,20 +18,31 @@ import { defineComponent, ref } from 'vue';
 import AuthForm from '@/components/AuthForm.vue';
 import { AuthFormBody } from '@/types/authentication/AuthFormBody';
 import { Ref } from '@/types/utils/Ref';
+import useSignUp from '@/composables/useSignUp';
+import useLogin from '@/composables/useLogin';
 
 export default defineComponent({
   name: 'Login',
   components: { AuthForm },
   setup() {
-    const isLogin = ref(true) as Ref<boolean>;
+    const { error: errorSignUp, signUp } = useSignUp();
+    const { error: errorLogin, login } = useLogin();
+    const isLogin: Ref<boolean> = ref(true);
+    const isLoading: Ref<boolean> = ref(false);
 
-    return { isLogin };
-  },
-  methods: {
-    submitHandler(e: AuthFormBody) {
-      // eslint-disable-next-line no-console
-      console.log('submitHandler', e);
-    },
+    const submitHandler = async (e: AuthFormBody) => {
+      isLoading.value = true;
+      if (isLogin.value) {
+        await login(e);
+      } else {
+        await signUp(e);
+      }
+      isLoading.value = false;
+    };
+
+    return {
+      isLoading, isLogin, errorLogin, submitHandler, errorSignUp,
+    };
   },
 });
 </script>

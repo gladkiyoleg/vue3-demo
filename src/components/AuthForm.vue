@@ -30,7 +30,7 @@
           required
         />
       </div>
-      <button class="button" @click="submit">
+      <button class="button" type="submit" :disabled="isDisabled">
         Submit
       </button>
     </form>
@@ -48,23 +48,27 @@ export default defineComponent({
       type: Boolean,
       required: true,
     },
+    isDisabled: {
+      type: Boolean,
+      default: false,
+    },
   },
   setup(props, { emit }) {
-    const name = ref('') as Ref<string>;
-    const email = ref('') as Ref<string>;
-    const password = ref('') as Ref<string>;
+    const name: Ref<string> = ref('');
+    const email: Ref<string> = ref('');
+    const password: Ref<string> = ref('');
 
     const submit = () => {
       if (props.isLogin) {
         emit('on-submit', {
-          email: email.value,
-          password: password.value,
+          email: email.value.trim(),
+          password: password.value.trim(),
         });
       } else {
         emit('on-submit', {
-          email: email.value,
-          password: password.value,
-          name: name.value,
+          email: email.value.trim(),
+          password: password.value.trim(),
+          name: name.value.trim(),
         });
       }
     };
