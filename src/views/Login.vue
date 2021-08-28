@@ -15,6 +15,7 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
+import { useRouter } from 'vue-router';
 import AuthForm from '@/components/AuthForm.vue';
 import { AuthFormBody } from '@/types/authentication/AuthFormBody';
 import { Ref } from '@/types/utils/Ref';
@@ -27,6 +28,7 @@ export default defineComponent({
   setup() {
     const { error: errorSignUp, signUp } = useSignUp();
     const { error: errorLogin, login } = useLogin();
+    const router = useRouter();
     const isLogin: Ref<boolean> = ref(true);
     const isLoading: Ref<boolean> = ref(false);
 
@@ -34,8 +36,14 @@ export default defineComponent({
       isLoading.value = true;
       if (isLogin.value) {
         await login(e);
+        if (!errorLogin.value) {
+          await router.push('/');
+        }
       } else {
         await signUp(e);
+        if (!errorSignUp.value) {
+          await router.push('/');
+        }
       }
       isLoading.value = false;
     };
