@@ -14,11 +14,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { defineComponent, ref, Ref } from 'vue';
 import { useRouter } from 'vue-router';
 import AuthForm from '@/components/AuthForm.vue';
 import { AuthFormBody } from '@/types/authentication/AuthFormBody';
-import { Ref } from '@/types/utils/Ref';
 import useSignUp from '@/composables/useSignUp';
 import useLogin from '@/composables/useLogin';
 
