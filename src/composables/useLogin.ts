@@ -1,16 +1,17 @@
-import { ref } from 'vue';
+import { ref, Ref } from 'vue';
 import { auth, firebaseAuth } from '@/firebase/config';
 import { AuthFormBody } from '@/types/authentication/AuthFormBody';
-import { Ref } from '@/types/utils/Ref';
 
-// eslint-disable-next-line max-len
-export default function useLogin(): { error: Ref<string | undefined>, login: (data: AuthFormBody) => Promise<void> } {
+export default function useLogin(): {
+  error: Ref<string | undefined>,
+  login: (data: AuthFormBody) => Promise<void>
+  } {
   const error: Ref<string | undefined> = ref();
 
   const login = async (data: AuthFormBody): Promise<void> => {
     error.value = '';
     try {
-      const res = await firebaseAuth.signInWithEmailAndPassword(
+      await firebaseAuth.signInWithEmailAndPassword(
         auth,
         data.email,
         data.password,

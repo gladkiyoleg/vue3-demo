@@ -1,9 +1,10 @@
-import { ref } from 'vue';
+import { ref, Ref } from 'vue';
 import { auth, firebaseAuth } from '@/firebase/config';
-import { Ref } from '@/types/utils/Ref';
 
-// eslint-disable-next-line max-len
-export default function useLogout(): { error: Ref<string | undefined>, logout: () => Promise<void> } {
+export default function useLogout(): {
+  error: Ref<string | undefined>,
+  logout: () => Promise<void>
+  } {
   const error: Ref<string | undefined> = ref();
 
   const logout = async (): Promise<void> => {

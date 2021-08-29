@@ -1,6 +1,5 @@
-import { ref } from 'vue';
+import { ref, Ref } from 'vue';
 import { auth, firebaseAuth } from '@/firebase/config';
-import { Ref } from '@/types/utils/Ref';
 import { User } from '@/types/user/User';
 
 export default function useUser(): {user: User | null} {
