@@ -33,7 +33,7 @@ export default {
           email: user.email,
           displayName: user.displayName,
           message: message.value,
-          timestamp: firebaseFirestore.serverTimestamp(),
+          createdAt: firebaseFirestore.serverTimestamp(),
         };
         await addDoc(data);
         if (!error.value) {
@@ -55,8 +55,11 @@ export default {
     max-width: 620px;
     width: 100%;
     border: 1px solid #eee;
-    border-radius: 4px;
-    padding: 6px 12px;
+    border-radius: 25px;
+    padding: 10px 16px;
     resize: none;
+    height: 38px;
+    outline: none;
+    box-shadow: 0px 1px 15px 1px rgb(0 0 0 / 30%);
   }
 </style>

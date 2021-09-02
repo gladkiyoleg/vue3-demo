@@ -54,8 +54,8 @@ export default defineComponent({
   },
   setup(props, { emit }) {
     const name: Ref<string> = ref('');
-    const email: Ref<string> = ref('email@email.com');
-    const password: Ref<string> = ref('123123');
+    const email: Ref<string> = ref('');
+    const password: Ref<string> = ref('');
 
     const submit = () => {
       if (props.isLogin) {
