@@ -2,24 +2,26 @@
   <div class="header">
     Chat
   </div>
-  <div v-if="messages" class="container">
+  <div v-if="messages" class="container" ref="container">
     <div v-for="(message, i) in messages"
          :key="i"
          class="message-wrapper"
          :class="{'message-wrapper__your': message.email === user.email}"
     >
-      <div class="message-container">
-        <span class="message">{{ message.message }}</span>
-      </div>
       <div>
-        <span class="name">{{ message.displayName }}</span>
+        <span class="name">{{ message.email === user.email ? 'You' : message.displayName }}</span>
+      </div>
+      <div class="message-container">
+        <div class="message">{{ message.message }}</div>
+        <div class="date">{{ createdAt(message) }}</div>
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { Ref } from 'vue';
+import { Ref, onUpdated, ref } from 'vue';
+import format from 'date-fns/format';
 import { firebaseFirestore } from '@/firebase/config';
 import { User } from '@/types/user/User';
 import useCollection from '@/composables/useCollection';
@@ -29,15 +31,29 @@ export default {
   name: 'ChatMessagesContainer',
   setup(): {
       messages: Ref<firebaseFirestore.DocumentData[] | null>,
-      user: User | null
+      user: User | null,
+      container: Ref<HTMLElement | null>
       } {
     const { messages } = useCollection('messages');
     const { user } = useUser();
+    const container: Ref<HTMLElement | null> = ref(null);
+
+    onUpdated(() => {
+      if (container.value) {
+        container.value.scrollTop = container.value.scrollHeight;
+      }
+    });
 
     return {
       messages,
       user,
+      container,
     };
+  },
+  methods: {
+    createdAt(message: firebaseFirestore.DocumentData): string {
+      return format(message.createdAt.toDate(), 'do LLL H:mm');
+    },
   },
 };
 </script>
@@ -79,7 +95,7 @@ export default {
       align-items: flex-end;
 
       .message-container {
-        border-radius: 16px 16px 2px 16px;
+        border-radius: 16px 0 16px 16px;
         background-color: #f6f6f6;
       }
     }
@@ -87,9 +103,10 @@ export default {
 
   .message-container {
     display: flex;
-    width: 80%;
+    flex-direction: column;
+    width: 65%;
     border: 1px solid #ccc;
-    border-radius: 16px 16px 16px 2px;
+    border-radius: 0 16px 16px 16px;
     padding: 4px 10px;
 
     .message {
@@ -100,8 +117,14 @@ export default {
   }
 
   .name {
-    color: rgba(0,0,0,.5);
+    color: #000000;
     font-weight: 500;
     font-size: 11px;
+  }
+
+  .date {
+    color: rgba(0,0,0,.5);
+    font-size: 10px;
+    text-align: right;
   }
 </style>

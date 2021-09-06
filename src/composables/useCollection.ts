@@ -1,4 +1,4 @@
-import { ref, Ref } from 'vue';
+import { ref, Ref, watchEffect } from 'vue';
 import { firebaseFirestore, db } from '@/firebase/config';
 import { ChatFormBody } from '@/types/chat/ChatFormBody';
 
@@ -22,14 +22,21 @@ export default function useCollection(collection: string): {
     }
   };
 
-  firebaseFirestore.onSnapshot(firebaseFirestore.collection(db, collection), (snap) => {
-    const results: firebaseFirestore.DocumentData[] = [];
-    snap.forEach((s) => {
-      if (s.data().createdAt) {
-        results.push({ ...s.data() });
-      }
-      messages.value = results.sort((a, b) => a.createdAt - b.createdAt);
-    });
+  const unsub = firebaseFirestore.onSnapshot(
+    firebaseFirestore.collection(db, collection),
+    (snap) => {
+      const results: firebaseFirestore.DocumentData[] = [];
+      snap.forEach((s) => {
+        if (s.data().createdAt) {
+          results.push({ ...s.data() });
+        }
+        messages.value = results.sort((a, b) => a.createdAt - b.createdAt);
+      });
+    },
+  );
+
+  watchEffect((onInvalidate) => {
+    onInvalidate(() => unsub());
   });
 
   return {

@@ -9,10 +9,14 @@
 import { useRouter } from 'vue-router';
 import useLogout from '@/composables/useLogout';
 import useUser from '@/composables/useUser';
+import { User } from '@/types/user/User';
 
 export default {
   name: 'Navbar',
-  setup() {
+  setup(): {
+    user: User | null,
+    logoutHandler: () => Promise<void>
+    } {
     const { error, logout } = useLogout();
     const { user } = useUser();
     const router = useRouter();
